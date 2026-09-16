@@ -6,7 +6,7 @@ const axios = require('axios');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*' }));h
 
 const CLIENT_ID     = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -138,7 +138,7 @@ Responda APENAS JSON válido sem markdown:
 {"produto":"nome do produto","headlines":["h1","h2","h3","h4","h5","h6","h7","h8","h9","h10","h11","h12","h13","h14","h15"],"descriptions":["d1","d2","d3","d4"],"callouts":["c1","c2","c3","c4","c5","c6","c7","c8","c9","c10"],"sitelinks":[{"text":"Texto","desc1":"Desc 1","desc2":"Desc 2","url":"/"}],"keywords":["kw1","kw2","kw3","kw4","kw5","kw6","kw7","kw8","kw9","kw10","kw11","kw12","kw13","kw14","kw15"]}`;
 
     const aiResp = await axios.post('https://api.anthropic.com/v1/messages', {
-      model: 'claude-3-5-haiku-20241022', max_tokens: 2000,
+      model: 'claude-3-haiku-20240307', max_tokens: 2000,
       messages: [{ role: 'user', content: prompt }]
     }, { headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' } });
 
@@ -199,7 +199,7 @@ app.post('/campaigns/create', async (req, res) => {
 app.get('/test-anthropic', async (req, res) => {
     try {
           const resp = await axios.post('https://api.anthropic.com/v1/messages', {
-                  model: 'claude-3-5-haiku-20241022', max_tokens: 10,
+                  model: 'claude-3-haiku-20240307', max_tokens: 10,
                   messages: [{ role: 'user', content: 'teste' }]
           }, {
                   headers: {
