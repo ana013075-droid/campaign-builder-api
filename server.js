@@ -1,4 +1,4 @@
-require('dotenv').config();
+ equire('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
@@ -17,7 +17,58 @@ const ADS_API_VER   = 'v19';
 
 // Token store in-memory (por conta: customer_id → tokens)
 const tokenStore = {};
-let pendingTokens = null; // tokens recém-obtidos, aguardando associação
+let pendingTokens = null;
+
+// Helper: build sitelink URL com UTM params (usa só a origem, ignora afiliado)
+function buildSitelinkUrl(baseUrl, slPath, slText) {
+  try {
+    const origin   = new URL(baseUrl).origin;
+    const path     = (slPath && slPath.trim()) ? slPath.trim() : '/';
+    const resolved = path.startsWith('http') ? new URL(path) : new URL(path, origin);
+    resolved.search = '';
+    resolved.searchParams.set('utm_source', 'google');
+    resolved.searchParams.set('utm_medium', 'cpc');
+    const slug = 'sl_' + (slText || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    if (slug !== 'sl_') resolved.searchParams.set('utm_content', slug);
+    return resolved.toString();
+  } catch (_) {
+    return '/?utm_source=google&utm_medium=cpc';
+  }
+}
+
+// Helper: build sitelink URL com UTM params (usa só a origem, ignora afiliado)
+function buildSitelinkUrl(baseUrl, slPath, slText) {
+  try {
+    const origin   = new URL(baseUrl).origin;
+    const path     = (slPath && slPath.trim()) ? slPath.trim() : '/';
+    const resolved = path.startsWith('http') ? new URL(path) : new URL(path, origin);
+    resolved.search = '';
+    resolved.searchParams.set('utm_source', 'google');
+    resolved.searchParams.set('utm_medium', 'cpc');
+    const slug = 'sl_' + (slText || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    if (slug !== 'sl_') resolved.searchParams.set('utm_content', slug);
+    return resolved.toString();
+  } catch (_) {
+    return '/?utm_source=google&utm_medium=cpc';
+  }
+}
+
+// Helper: build sitelink URL com UTM params (usa só a origem, ignora afiliado)
+function buildSitelinkUrl(baseUrl, slPath, slText) {
+  try {
+    const origin   = new URL(baseUrl).origin;
+    const path     = (slPath && slPath.trim()) ? slPath.trim() : '/';
+    const resolved = path.startsWith('http') ? new URL(path) : new URL(path, origin);
+    resolved.search = '';
+    resolved.searchParams.set('utm_source', 'google');
+    resolved.searchParams.set('utm_medium', 'cpc');
+    const slug = 'sl_' + (slText || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    if (slug !== 'sl_') resolved.searchParams.set('utm_content', slug);
+    return resolved.toString();
+  } catch (_) {
+    return '/?utm_source=google&utm_medium=cpc';
+  }
+} // tokens recém-obtidos, aguardando associação
 
 // ─── OAuth2 ───────────────────────────────────────────────────────────────────
 function makeOAuth2Client() {
@@ -248,7 +299,7 @@ Responda APENAS com JSON válido, sem markdown, sem explicação:
       text:  String(sl.text  || '').slice(0, 25),
       desc1: String(sl.desc1 || '').slice(0, 35),
       desc2: String(sl.desc2 || '').slice(0, 35),
-      url:   sl.url || '/'
+      url:   buildSitelinkUrl(url, sl.url, sl.text)
     }));
     copy.keywords = (copy.keywords || []).slice(0, 15).map(k => String(k));
 
