@@ -196,6 +196,24 @@ app.post('/campaigns/create', async (req, res) => {
   }
 });
 
+app.get('/test-anthropic', async (req, res) => {
+    try {
+          const resp = await axios.post('https://api.anthropic.com/v1/messages', {
+                  model: 'claude-3-5-haiku-20241022', max_tokens: 10,
+                  messages: [{ role: 'user', content: 'teste' }]
+          }, {
+                  headers: {
+                            'x-api-key': process.env.ANTHROPIC_API_KEY,
+                            'anthropic-version': '2023-06-01',
+                            'content-type': 'application/json'
+                  }
+          });
+          res.json({ ok: true, response: resp.data });
+    } catch (err) {
+          res.status(500).json({ error: err.message, details: err.response?.data });
+    }
+});
+
 app.get('/health', (req, res) => res.json({ status: 'ok', version: ADS_API_VER }));
 
 function formatDate(d) { return d.toISOString().slice(0,10).replace(/-/g,''); }
